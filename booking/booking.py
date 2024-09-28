@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, make_response
+#from flask import Flask, render_template, request, jsonify, make_response
 import requests
 import json
 from werkzeug.exceptions import NotFound
@@ -44,20 +44,30 @@ def get_json_user(userid):
 def post_json_booking(userid):
    req = request.get_json()
 
-   for booking in bookings:
-      if str(booking["userid"]) == str(userid):
-         date_req = str(req['date'])
-         for date in booking["dates"]:
-            if str(date['date'])==date_req:
-               return make_response(jsonify({"error":"A booking already exists"}),409)
-         date = {
-            "date": date_req,
-            "movies": str(req['movieid'])
-         }
-         booking["dates"].append(date)
-         write(bookings)
-         res = make_response(jsonify({"message":"movie added"}),200)
-         return res
+   date_req = str(req['date'])
+   url = f"http://<adresse_du_service_films>/showmovies/{date_req}"
+   result = requests.get(url)
+   if result.status_code == 200:
+      movies = result.json()
+      if str(req['movieid']) in movies:
+         for booking in bookings:
+            if str(booking["userid"]) == str(userid):
+               for date in booking["dates"]:
+                  if str(date['date'])==date_req:
+                     return make_response(jsonify({"error":"A booking already exists"}),409)
+               date = {
+                  "date": date_req,
+                  "movies": str(req['movieid'])
+               }
+               booking["dates"].append(date)
+               write(bookings)
+               res = make_response(jsonify({"message":"movie added"}),200)
+               return res
+      else:
+         return make_response((jsonify({"error": "Créneau inexistant"}), 409))
+   
+   else:
+      return make_response((jsonify({"error": "Erreur lors de la récupération des films"}), 409))
 
 def write(something):
     with open('{}/databases/movies.json'.format("."), 'w') as f:
