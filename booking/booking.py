@@ -1,4 +1,4 @@
-#from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, render_template, request, jsonify, make_response
 import requests
 import json
 from werkzeug.exceptions import NotFound
@@ -45,7 +45,7 @@ def post_json_booking(userid):
    req = request.get_json()
 
    date_req = str(req['date'])
-   url = f"http://<adresse_du_service_films>/showmovies/{date_req}"
+   url = f"http://127.0.0.1:3202/showmovies/{date_req}"
    result = requests.get(url)
    if result.status_code == 200:
       movies = result.json()
@@ -70,8 +70,8 @@ def post_json_booking(userid):
       return make_response((jsonify({"error": "Erreur lors de la récupération des films"}), 409))
 
 def write(something):
-    with open('{}/databases/movies.json'.format("."), 'w') as f:
-        json.dump(something, f)
+    with open('{}/databases/bookings.json'.format("."), 'w') as f:
+        json.dump(something, f, indent=4)
 
 
 
