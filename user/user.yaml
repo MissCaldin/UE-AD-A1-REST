@@ -1,0 +1,247 @@
+---
+openapi: 3.0.3
+info:
+  title: User API
+  description: This is the API of the User service
+paths:
+  /:
+    get:
+      tags:
+      - developers
+      summary: home page of the service
+      operationId: home
+      responses:
+        "200":
+          description: welcome message
+          content:
+            text/html:
+              schema:
+                type: string
+                example: <h1>Test</h1>
+  /{id}:
+    get:
+      tags:
+      - developers
+      summary: home page for the user
+      operationId: homeUser
+      responses:
+          "200":
+            description: welcome message
+            content:
+              text/html:
+                schema:
+                  type: string
+                  example: <h1>Test</h1>
+  /{id}/bookings:
+    get:
+      tags:
+      - developers
+      summary: get the booking of the users in JSON format
+      description: get the bookings of the user by asking the service booking
+      operationId: get_bookings_for_user
+      parameters:
+      - name: userid
+        in: path
+        description: User ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Bookings of the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingsUser'
+        "400":
+          description: bad input parameter
+  /movies:
+    get:
+      tags:
+      - developers
+      summary: get the full JSON database from movies
+      operationId: movies
+      responses:
+        "200":
+          description: full JSON movies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllMovies'
+  /showmovies/{date}:
+    get:
+      tags:
+      - developers
+      summary: get the schedule by date
+      operationId: get_movies_bydate
+      parameters:
+      - name: date
+        in: path
+        description: date.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllSchedule'
+        "400":
+          description: bad input parameter
+  /movieschedule/{movie}:
+    get :
+      tags:
+      - developers
+      summary: get the schedule for a movie
+      operationId: get_times_bymovie
+      parameters:
+      - movie: string
+        in: path
+        description: movie ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Schedule for the movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieSchedule'
+        "400":
+          description: bad input parameter
+  /{id}/{movie}:
+    get:
+    tags:
+    - developers
+    summary: Information on the movie
+    description: get the information on the movie thanks to the service Movie, after having checked that the user have reserved it with the service Booking.
+    operationId: get_movie
+    parameters:
+    - name: userid
+      in: path
+      description: User ID.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    - name: movieid
+      in: path
+      description: Mover ID.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    responses:
+      "200":
+        description: Informations on the movie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieItem'
+      "400":
+        description: bad input parameter
+components:
+  schemas:
+    AllSchedule:
+      required:
+      - schedule
+      type: object
+      properties:
+        schedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
+    Schedule:
+      required:
+      - date
+      - movies
+      type: object
+      properties:
+        date:
+          type: string
+          example: "20151130"
+        movies:
+          type: array
+          items:
+            type: string
+            example: 720d006c-3a57-4b6a-b18f-9b713b073f3c
+    AllMovies:
+      type: object
+      required:
+        - movies
+      properties:
+        movies:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/MovieItem'
+    MovieItem:
+      type: object
+      required:
+        - title
+        - rating
+        - director
+        - id
+      properties:
+        title:
+          type: string
+          example: The Martian
+        rating:
+          type: integer
+          example: 7
+        director:
+          type: string
+          example: Paul McGuigan
+        id:
+          type: string
+          example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
+    MovieSchedule:
+      required:
+      - movie
+      - dates
+      type: object
+      properties:
+        movie:
+          type: string
+        dates:
+          type: array
+          items:
+            type: string
+    BookingsUser:
+      required:
+      - dates
+      - userid
+      type: object
+      properties:
+        userid:
+          type: string
+          example: chris_rivers
+        dates:
+          type: array
+          items:
+            $ref: '#/components/schemas/DateItem'
+    DateItem:
+      required:
+      - date
+      - movies
+      type: object
+      properties:
+        date:
+          type: string
+          example: "20151201"
+        movies:
+          type: array
+          items:
+            type: string
+            example: 276c79ec-a26a-40a6-b3d3-fb242a5947b6
