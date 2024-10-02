@@ -23,9 +23,23 @@ def showtimes():
 def showmovies(date):
    for day in schedule:
       if str(day["date"]) == str(date):
-         return make_response(jsonify(day["movies"]),200)
+         return make_response(jsonify({date:day["movies"]}),200)
          
    return make_response(jsonify({"error":"No movie this day"}),400)
+
+@app.route("/movieschedule/<movieid>", methods=['GET'])
+def movieschedule(movieid):
+   response=[]
+   for day in schedule:
+      for id_movie in day["movies"]:
+         if id_movie==movieid:
+            response.append(day["date"])
+            break
+   if response == []:
+      return make_response(jsonify({"error":"This film is not scheduled"}),400)
+
+   return make_response(jsonify({movieid:response}), 200)
+
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))

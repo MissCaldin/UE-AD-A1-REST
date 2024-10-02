@@ -66,6 +66,28 @@ paths:
                 $ref: '#/components/schemas/Schedule'
         "400":
           description: bad input parameter
+  /movieschedule/{movieid}:
+    get:
+      summary: get the schedule for a movie
+      operationId: get_movie_schedule
+      parameters:
+      - name: movieid
+        in: path
+        description: Movie ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Schedule for the movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieSchedule'
+        "400":
+          description: bad input parameter
 components:
   schemas:
     AllSchedule:
@@ -91,3 +113,15 @@ components:
           items:
             type: string
             example: 720d006c-3a57-4b6a-b18f-9b713b073f3c
+    MovieSchedule:
+      required:
+      - movie
+      - dates
+      type: object
+      properties:
+        movie:
+          type: string
+        dates:
+          type: array
+          items:
+            type: string
