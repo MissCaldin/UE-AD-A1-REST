@@ -1,0 +1,7 @@
+user/{id}:
+    mettre erreur 400 pas de compte
+
+user/{iduser}/{film}:
+    changer id film en titre
+
+voir pour généraliser le format date
