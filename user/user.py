@@ -64,6 +64,8 @@ def movieschedule(movieid):
 @app.route("/<string:id>", methods=["GET"])
 def home_user(id):
    user = next((user for user in users if user['id'] == id), None)
+   if user==None:
+      return jsonify({"error": "User not found"}), 404
    return make_response(jsonify(user['name']))
 
 # Get bookings for a specific user
