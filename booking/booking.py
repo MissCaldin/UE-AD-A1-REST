@@ -69,6 +69,25 @@ def post_json_booking(userid):
    else:
       return make_response((jsonify({"error": "Erreur lors de la récupération des films"}), 409))
 
+@app.route("/showtimes", methods=['GET'])
+def showtime():
+   url=f"http://127.0.0.1:3202/showtimes"
+   response=requests.get(url)
+   return make_response(jsonify(response.json()), response.status_code)
+
+@app.route("/showmovies/<date>", methods=['GET'])
+def showmovies(date):
+   url=f"http://127.0.0.1:3202/showmovies/{date}"
+   response=requests.get(url)
+   return make_response(jsonify(response.json()), response.status_code)
+
+@app.route("/movieschedule/<movieid>", methods=['GET'])
+def movieschedule(movieid):
+   url=f"http://127.0.0.1:3202/movieschedule/{movieid}"
+   response=requests.get(url)
+   return make_response(jsonify(response.json()), response.status_code)
+   
+
 def write(something):
     with open('{}/databases/bookings.json'.format("."), 'w') as f:
         json.dump(something, f, indent=4)

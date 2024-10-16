@@ -23,7 +23,7 @@ def movies():
 
 @app.route("/showmovies/<date>", methods=['GET'])
 def showmovies(date):
-   url=f"http://127.0.0.1:3202/showmovies/{date}"
+   url=f"http://127.0.0.1:3201/showmovies/{date}"
    ids_date = requests.get(url)
    if ids_date.status_code == 400:
       return make_response(jsonify({"error":"No movie this day"}),400)
@@ -35,7 +35,7 @@ def showmovies(date):
       title = requests.get(url2).json()["title"]
       response.append(title)
    date_format = date[6:]+'/'+date[4:6]+'/'+date[:4]
-   return make_response(jsonify({date_format: response}), 200)
+   return make_response(jsonify({pretty_date(date): response}), 200)
 
 @app.route("/movieschedule/<movieid>", methods=['GET'])
 def movieschedule(movieid):
@@ -45,16 +45,13 @@ def movieschedule(movieid):
       return response1
    title=response1.json()["title"]
 
-   url=f"http://127.0.0.1:3202/movieschedule/{movieid}"
+   url=f"http://127.0.0.1:3201/movieschedule/{movieid}"
    response2 = requests.get(url)
    if response2.status_code == 400:
       return response2
    
    response=[]
    rep_json = response2.json()
-
-   def pretty_date(date):
-      return date[6:]+'/'+date[4:6]+'/'+date[:4]
 
    for date in rep_json[movieid]:
       response.append(pretty_date(date))
@@ -127,6 +124,10 @@ def get_movie(userid, movieid):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+def pretty_date(date):
+   return date[6:]+'/'+date[4:6]+'/'+date[:4]
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
