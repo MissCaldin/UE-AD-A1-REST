@@ -28,7 +28,7 @@ def get_json():
 #Print the JSON bookinks of the userid (GET)
 #Add a booking for a user (POST)
 @app.route("/booking/<userid>", methods=['GET'])
-def get_json_user(userid):
+def get_bookung_for_user(userid):
    user_bookings = []
    for booking in bookings:
      if booking["userid"] == userid:
@@ -41,15 +41,18 @@ def get_json_user(userid):
    return res
 
 @app.route("/booking/<userid>", methods=['POST'])
-def post_json_booking(userid):
+def add_booking_byuser(userid):
    req = request.get_json()
 
    date_req = str(req['date'])
+   #Récupérer les films projettés à cette date
    url = f"http://127.0.0.1:3202/showmovies/{date_req}"
    result = requests.get(url)
    if result.status_code == 200:
       movies = result.json()
+      #Vérifier que le film souhaité est bien dans les films projettés à cette date
       if str(req['movieid']) in movies:
+         #Vérifier que la reservation n'a pas déjà été faite
          for booking in bookings:
             if str(booking["userid"]) == str(userid):
                for date in booking["dates"]:

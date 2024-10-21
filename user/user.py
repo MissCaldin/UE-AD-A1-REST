@@ -29,12 +29,14 @@ def movie_info(movie_id):
 
 @app.route("/showmovies/<date>", methods=['GET'])
 def showmovies(date):
+   #Récupérer auprès de showtimes les films à cette date
    url=f"http://127.0.0.1:3201/showmovies/{date}"
    ids_date = requests.get(url)
    if ids_date.status_code == 400:
       return make_response(jsonify({"error":"No movie this day"}),400)
    response=[]
    ids = ids_date.json()
+   #Récupérer auprès de movies les titres des films
    for id_movie in ids[date]:
       print(id_movie)
       url2=f"http://127.0.0.1:3200/movies/{id_movie}"
