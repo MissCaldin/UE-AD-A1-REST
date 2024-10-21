@@ -21,6 +21,12 @@ def movies():
    response = requests.get(url)
    return make_response(jsonify(response.json()), 200)
 
+@app.route("/movieinfo/{movie_id}", methods=['GET'])
+def movie_info(movie_id):
+   url=f"http://127.0.0.1:3200/movies/{movie_id}"
+   response = requests.get(url)
+   return make_response(jsonify(response.json()), 200)
+
 @app.route("/showmovies/<date>", methods=['GET'])
 def showmovies(date):
    url=f"http://127.0.0.1:3201/showmovies/{date}"
@@ -72,7 +78,9 @@ def get_bookings_for_user(userid):
     try:
         response = requests.get(f"http://127.0.0.1:3201/booking/{userid}")
         if response.status_code == 200:
-            bookings = response.json()
+            bookings = response.json()[0]
+            for date in bookings["dates"]:
+               date["date"]=pretty_date(date["date"])
             return jsonify(bookings), 200
         else:
             return jsonify({"error": "User not found or no bookings available"}), 404
