@@ -136,7 +136,7 @@ def get_movie(userid, movieid):
         return jsonify({"error": str(e)}), 500
 
 
-def pretty_date(date):
+def pretty_date(date): #utilisé pour moidfier le format affichant les dates pour une meilleure lisibilité de l'utilisateur
    return date[6:]+'/'+date[4:6]+'/'+date[:4]
 
 if __name__ == "__main__":
